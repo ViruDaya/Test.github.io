@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daya - AI Chatbot</title>
+    <style>
+        body {
+          background-image: url(bg.png);
+            font-family: 'Algerian', Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f1f1;
+            margin: 10px;
+            padding: 0;
+        }
+        h1, h2{
+          color: white;
+        }
+        
+        .img {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          width: 150px;
+        }
+        .chat-container {
+            max-width: 400px auto;
+            margin: 20px auto;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+            border-radius: 10px;
+            border-style: outset;
+            border-color: black;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+          }
+        #chat-box {
+            height: 400px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 60px);
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f1f1f1;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f1f1f1;
+            margin-bottom: 10px;
+        }
+
+        .response-container {
+          margin: 0px;
+          display: flex;
+          align-item: flex-start;
+          margin-bottom: 10px;
+        }
+       .user-message {
+        margin-left: auto;
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            border-radius: 50%;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .user-avatar {
+            background-color: #fff;
+            margin-left: 10px;
+        }
+
+        .bot-avatar {
+            background-color: #fff
+        }
+
+        .user-message p {
+            margin: 0;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: #007bff;
+            color: white;
+            overflow-wrap: break-word;
+        }
+
+        .bot-message p {
+            margin: 0;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: #4CAF50;
+            color: white;
+            overflow-wrap: break-word;
+        }
+        .user-message, .bot-message {
+        animation: fadeInSlideUp 0.5s ease;
+    }
+        
+     @keyframes fadeInSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    </style>
+</head>
+<body onload="generateAutoResponse()">
+  <h1 align="center">Welcome To Help Center</h1>
+<div class="img"><img src="online.png" width="150px"></div> 
+    <div class="chat-container">
+      <h2 align="center"><u>Message Here</u></h2>
+        <div id="chat-box"></div>
+        <select id="user-selection">
+            <option value="custom">Type your message...</option>
+            <option value="send_pic">Send Me Your Pic</option>
+            <option value="what_about_you">What About You?</option>
+            <option value="terms_of_admission">I want to Know About Related to Admission of Child</option>
+            <option value="suggestions">I have a Suggestion for You.</option>
+            <option value="query">I have a Query💬/Question❓/Having Problem💢</option>
+            <option value="developers_contact">I wanna Know About Developers and about their Contact Info</option>
+            <option value="school_contact">I wanna Know About School and about their Contact Info</option>
+        </select>
+        <input type="text" id="user-input" placeholder="Type your message..." style="display: none;">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <script>   
+    function sendMessage() {
+        var userInput = "";
+        var selection = document.getElementById("user-selection").value;
+        if (selection === "custom") {
+            userInput = document.getElementById("user-input").value;
+        } else {
+            userInput = document.getElementById("user-selection").options[document.getElementById("user-selection").selectedIndex].text;
+        }
+        var chatBox = document.getElementById("chat-box");
+
+        // Display user message with styling and avatar on the right side
+        var userResponseElement = document.createElement("div");
+        userResponseElement.classList.add("response-container");
+        userResponseElement.innerHTML = "<div class='user-message'>" +
+                             "<p>" + userInput + "</p>" +
+                   "<div class='avatar user-avatar'><img src='user_avatar.png' alt='User Avatar'></div>" +
+                                        "</div>";
+        chatBox.appendChild(userResponseElement);
+
+        // Call function to generate bot response with a delay
+        setTimeout(function() {
+            generateResponse(userInput);
+        }, 2000);
+
+        // Clear input field
+        if (selection === "custom") {
+            document.getElementById("user-input").value = "";
+        }
+    }
+
+        function generateResponse(userInput) {
+            var chatBox = document.getElementById("chat-box");
+            var botResponse = "";
+
+            if (userInput.toLowerCase().includes("send me your pic")) {
+                botResponse = "Okay!<br>Here is my pic:<br> <img src='link_to_your_pic.jpg' alt='Daya's Pic' width='250em' height='250em'><br>😊";
+            } else if (userInput.toLowerCase().includes("what about you?")) {
+                botResponse = "I'm AI Daya, created by ViruDaya Production. <br>I was only a thought 💭. <br>But Now, I'm here for your help.";
+            } else if (userInput.toLowerCase().includes("i have a suggestion for you.")) {
+                botResponse = "😊Sure,<br>Tap on 'Type Your Message'. <br> And Type Your Suggestion💭.";
+            } else if (userInput.toLowerCase().includes("i want to know about related to admission of child")) {
+                botResponse = "Sure! <br> Here is the Pdf file of Terms of Admission. <br> Tap here to open Pdf: 👇<br><a href='terms_of_admission.pdf'>Terms of Admission</a>";
+            } else if (userInput.toLowerCase().includes("i have a query") || userInput.toLowerCase().includes("question") || userInput.toLowerCase().includes("having problem")) {
+                botResponse = "😊Sure,<br>😎ViruDaya Would Help 🫵You. <br> 📞Contact him.<br>Here are his 📝Contact Info👇:<br><a href='tel:+917376000596'><ion-icon name='call-outline'></ion-icon>Call</a><br><a href='sms:+917376000596'><ion-icon name='mail-unread-outline'></ion-icon>Text Message</a><br><a href='mailto:testtube14321@gmail.com'><ion-icon name='mail-open-outline'>E-mail</ion-icon></a><br><a href='https://wa.me/917376000596'><ion-icon name='logo-whatsapp'></ion-icon>WhatsApp</a>";
+          } else if (userInput.toLowerCase().includes("developers and about their contact info")) {
+    botResponse = "Ok, As Your Wish.<br>To Know About Developers,<br>You Should visit this Page.<br>&nbsp;<br>Here are his 📝Contact Info👇:<br><a href='tel:+917376000596'><ion-icon name='call-outline'></ion-icon>Call</a><br><a href='sms:+917376000596'><ion-icon name='mail-unread-outline'></ion-icon>Text Message</a><br><a href='mailto:testtube14321@gmail.com'><ion-icon name='mail-open-outline'>E-mail</ion-icon></a><br><a href='https://wa.me/917376000596'><ion-icon name='logo-whatsapp'></ion-icon>WhatsApp</a>";
+} else if (userInput.toLowerCase().includes("school and about their contact info")) {
+    botResponse = "Ok, As Your Wish.<br>To Know About School,<br>You Should visit this Page.<br><br>Here are his 📝Contact Info👇:<br><a href='tel:+919807647502'><ion-icon name='call-outline'></ion-icon>Call</a><br><a href='sms:+919807647502'><ion-icon name='mail-unread-outline'></ion-icon>Text Message</a><br><a href='mailto:care.srmcs@gmail.com'><ion-icon name='mail-open-outline'>E-mail</ion-icon></a><br><a href='https://wa.me/919807647502'><ion-icon name='logo-whatsapp'></ion-icon>WhatsApp</a>";
+}
+            else {
+                botResponse = "Thanks for Your Suggestion.<br>I liked your Suggestion. <br>I'll Forward your Suggestion to ViruDaya";
+            }
+
+            // Append bot's response to the chat box
+            var botResponseElement = document.createElement("div");
+            botResponseElement.classList.add("response-container");
+            botResponseElement.innerHTML = "<div class='avatar bot-avatar'><img src='bot_avatar.png' alt='Bot Avatar'></div>" +"<div class='bot-message'><p>" + botResponse + "</p></div>";
+            chatBox.appendChild(botResponseElement);
+
+            // Scroll to bottom of chat box
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function generateAutoResponse() {
+            var chatBox = document.getElementById("chat-box");
+            var autoResponse = "Hello! I'm AI Daya.<br>Welcome to S. R. Memorial Convent School.<br>I'm here to help you.";
+
+            // Display auto response with a delay when chat opens
+            setTimeout(function() {
+                var autoResponseElement = document.createElement("div");
+                autoResponseElement.classList.add("response-container");
+                autoResponseElement.innerHTML = "<div class='avatar bot-avatar'><img src='bot_avatar.png' alt='Bot Avatar'></div>" +
+                                                "<div class='bot-message'><p>" + autoResponse + "</p></div>";
+                chatBox.appendChild(autoResponseElement);
+
+                // Scroll to bottom of chat box
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 2000);
+        }
+                document.getElementById("user-selection").addEventListener("change", function() {
+            var selection = document.getElementById("user-selection").value;
+            if (selection === "custom") {
+                document.getElementById("user-input").style.display = "block";
+            } else {
+                document.getElementById("user-input").style.display = "none";
+            }
+        });
+    </script>
+</body>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</html>
